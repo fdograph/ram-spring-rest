@@ -71,8 +71,8 @@ public class Api {
   }
 
   public List<Character> getCharacters(List<Integer> ids) {
-    String url = getApiUri("/character/{id}")
-        .buildAndExpand(Collections.singletonMap("id", ids))
+    String url = getApiUri("/character/{ids}")
+        .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
 
     ResponseEntity<Character[]> response = request(url, Character[].class);
@@ -102,8 +102,8 @@ public class Api {
   }
 
   public List<Location> getLocations(List<Integer> ids) {
-    String url = getApiUri("/location/{id}")
-        .buildAndExpand(Collections.singletonMap("id", ids))
+    String url = getApiUri("/location/{ids}")
+        .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
 
     ResponseEntity<Location[]> response = request(url, Location[].class);
@@ -133,8 +133,8 @@ public class Api {
   }
 
   public List<Episode> getEpisodes(List<Integer> ids) {
-    String url = getApiUri("/episode/{id}")
-        .buildAndExpand(Collections.singletonMap("id", ids))
+    String url = getApiUri("/episode/{ids}")
+        .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
 
     ResponseEntity<Episode[]> response = request(url, Episode[].class);
