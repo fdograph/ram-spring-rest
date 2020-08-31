@@ -3,12 +3,16 @@ package com.fdograph.demo.api.entities;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public abstract class ApiEntity {
+  @Getter
+  protected Integer id;
+
   @Autowired
   private Logger logger;
 
