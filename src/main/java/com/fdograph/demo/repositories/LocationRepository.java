@@ -4,10 +4,10 @@ import com.fdograph.demo.api.Api;
 import com.fdograph.demo.api.entities.Location;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
-public class LocationRepository extends Repository<Location> {
+@Repository
+public class LocationRepository extends DataRepository<Location> {
   @Autowired
   private Api api;
 
@@ -15,11 +15,7 @@ public class LocationRepository extends Repository<Location> {
     super();
   }
 
-  protected Location fetchOne(Integer id) {
-    return this.api.getLocation(id);
-  }
-
-  protected List<Location> fetchMany(List<Integer> ids) {
+  protected List<Location> fetch(List<Integer> ids) {
     return this.api.getLocations(ids);
   }
 }

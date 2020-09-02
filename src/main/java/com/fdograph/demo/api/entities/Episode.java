@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 public class Episode extends ApiEntity {
   private Integer id;
   private String name;
-  private String airDate;
   private String episode;
   private List<Integer> characters;
   private String url;
@@ -20,7 +19,6 @@ public class Episode extends ApiEntity {
           String url, Timestamp created) {
     this.id = id;
     this.name = name;
-    this.airDate = airDate;
     this.episode = episode;
     this.characters = getIdsFromUriList(characters);
     this.url = url;

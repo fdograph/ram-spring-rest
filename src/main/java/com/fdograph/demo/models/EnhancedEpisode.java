@@ -1,25 +1,30 @@
 package com.fdograph.demo.models;
 
-import com.fdograph.demo.api.entities.Character;
 import com.fdograph.demo.api.entities.Episode;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 @Builder
 public class EnhancedEpisode {
   private Integer id;
   private String name;
-  private String airDate;
   private String episode;
-  private List<BasicCharacter> characters;
 
-  public static EnhancedEpisodeBuilder builderFromEpisode(Episode episode) {
+  @Nullable
+  private List<EnhancedCharacter> characters;
+
+  public static EnhancedEpisode buildFromEpisode(@Nullable Episode episode) {
+    if (episode == null) {
+      return null;
+    }
+
     return builder()
         .id(episode.getId())
         .name(episode.getName())
-        .airDate(episode.getAirDate())
-        .episode(episode.getEpisode());
+        .episode(episode.getEpisode())
+        .build();
   }
 }

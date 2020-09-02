@@ -9,16 +9,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class Repository<T extends ApiEntity> {
+public abstract class DataRepository<T extends ApiEntity> {
   protected Map<Integer, T> items;
 
-  public Repository() {
+  public DataRepository() {
     this.items = new HashMap<>();
   }
 
-  protected abstract T fetchOne(Integer id);
+  protected abstract List<T> fetch(List<Integer> ids);
 
-  protected abstract List<T> fetchMany(List<Integer> ids);
+  private void insert(List<Integer> ids) {
+    List<T> fetchedItems = this.fetch(ids);
+
+    if (fetchedItems != null) {
+      fetchedItems.forEach(item -> this.set(item.getId(), item));
+    }
+  }
 
   public T get(Integer id) {
     T cached = this.items.get(id);
@@ -26,12 +32,10 @@ public abstract class Repository<T extends ApiEntity> {
       return cached;
     }
 
-    T item = this.fetchOne(id);
-    if (item != null) {
-      this.items.put(id, item);
-    }
+    List<Integer> searchIds = List.of(id);
+    this.insert(searchIds);
 
-    return item;
+    return this.items.get(id);
   }
 
   public List<T> getList(List<Integer> ids) {
@@ -39,8 +43,7 @@ public abstract class Repository<T extends ApiEntity> {
     searchIds.removeAll(this.items.keySet());
 
     if (searchIds.size() != 0) {
-      this.fetchMany(new ArrayList<>(searchIds))
-          .forEach(item -> this.set(item.getId(), item));
+      this.insert(new ArrayList<>(searchIds));
     }
 
     return ids.stream().map(this::get).collect(Collectors.toList());
@@ -48,13 +51,5 @@ public abstract class Repository<T extends ApiEntity> {
 
   public void set(Integer id, T item) {
     this.items.put(id, item);
-  }
-
-  public void invalidate(Integer id) {
-    this.items.remove(id);
-  }
-
-  public void clear() {
-    this.items.clear();
   }
 }

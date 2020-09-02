@@ -4,10 +4,10 @@ import com.fdograph.demo.api.Api;
 import com.fdograph.demo.api.entities.Episode;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
-public class EpisodeRepository extends Repository<Episode> {
+@Repository
+public class EpisodeRepository extends DataRepository<Episode> {
   @Autowired
   private Api api;
 
@@ -15,11 +15,7 @@ public class EpisodeRepository extends Repository<Episode> {
     super();
   }
 
-  protected Episode fetchOne(Integer id) {
-    return this.api.getEpisode(id);
-  }
-
-  protected List<Episode> fetchMany(List<Integer> ids) {
+  protected List<Episode> fetch(List<Integer> ids) {
     return this.api.getEpisodes(ids);
   }
 }

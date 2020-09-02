@@ -7,9 +7,6 @@ import com.fdograph.demo.api.entities.Episode;
 import com.fdograph.demo.api.entities.EpisodesArchive;
 import com.fdograph.demo.api.entities.Location;
 import com.fdograph.demo.api.entities.LocationsArchive;
-import com.fdograph.demo.models.BasicCharacter;
-import com.fdograph.demo.models.BasicEpisode;
-import com.fdograph.demo.models.BasicLocation;
 import com.fdograph.demo.models.EnhancedArchive;
 import com.fdograph.demo.models.EnhancedCharacter;
 import com.fdograph.demo.models.EnhancedEpisode;
@@ -22,9 +19,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class DataService {
   @Autowired
   private Api api;
@@ -44,7 +41,7 @@ public class DataService {
 
   public EnhancedArchive<EnhancedCharacter> getCharactersArchive(@Nullable Integer page) {
     Integer currentPage = Optional.ofNullable(page).orElse(1);
-    CharactersArchive archive = this.api.getAllCharacters(currentPage);
+    CharactersArchive archive = this.api.getCharactersArchive(currentPage);
     List<EnhancedCharacter> results = archive.getResults()
         .stream()
         .peek(item -> this.characterRepository.set(item.getId(), item))
@@ -65,7 +62,7 @@ public class DataService {
 
   public EnhancedArchive<EnhancedEpisode> getEpisodesArchive(@Nullable Integer page) {
     Integer currentPage = Optional.ofNullable(page).orElse(1);
-    EpisodesArchive archive = this.api.getAllEpisodes(currentPage);
+    EpisodesArchive archive = this.api.getEpisodesArchive(currentPage);
     List<EnhancedEpisode> results = archive.getResults()
         .stream()
         .peek(item -> this.episodeRepository.set(item.getId(), item))
@@ -86,7 +83,7 @@ public class DataService {
 
   public EnhancedArchive<EnhancedLocation> getLocationsArchive(@Nullable Integer page) {
     Integer currentPage = Optional.ofNullable(page).orElse(1);
-    LocationsArchive archive = this.api.getAllLocations(currentPage);
+    LocationsArchive archive = this.api.getLocationsArchive(currentPage);
     List<EnhancedLocation> results = archive.getResults()
         .stream()
         .peek(item -> this.locationRepository.set(item.getId(), item))
@@ -103,43 +100,46 @@ public class DataService {
 
   private EnhancedCharacter enhanceCharacter(Character character) {
     Integer originId = character.getOrigin().getId();
+    Location originLoc = this.locationRepository.get(originId);
+    EnhancedLocation origin = EnhancedLocation.buildFromLocation(originLoc);
     Integer locationId = character.getLocation().getId();
+    Location locationLoc = this.locationRepository.get(locationId);
+    EnhancedLocation location = EnhancedLocation.buildFromLocation(locationLoc);
 
-    List<BasicEpisode> episodes = this.episodeRepository.getList(character.getEpisode())
+    List<EnhancedEpisode> episodes = this.episodeRepository.getList(character.getEpisode())
         .stream()
-        .map(BasicEpisode::buildFromEpisode)
+        .map(EnhancedEpisode::buildFromEpisode)
         .collect(Collectors.toList());
 
-    return EnhancedCharacter.builderFromCharacter(character)
-        .origin(originId == null ? null :
-            BasicLocation.buildFromLocation(this.locationRepository.get(originId)))
-        .location(locationId == null ? null :
-            BasicLocation.buildFromLocation(this.locationRepository.get(locationId)))
-        .episodes(episodes)
-        .build();
+    EnhancedCharacter enhancedCharacter = EnhancedCharacter.buildFromCharacter(character);
+    enhancedCharacter.setEpisodes(episodes);
+    enhancedCharacter.setOrigin(origin);
+    enhancedCharacter.setLocation(location);
+
+    return enhancedCharacter;
   }
 
   private EnhancedEpisode enhanceEpisode(Episode episode) {
-    List<BasicCharacter> characters = this.characterRepository.getList(episode.getCharacters())
+    List<EnhancedCharacter> characters = this.characterRepository.getList(episode.getCharacters())
         .stream()
-        .map(BasicCharacter::buildFromCharacter)
+        .map(EnhancedCharacter::buildFromCharacter)
         .collect(Collectors.toList());
 
-    return EnhancedEpisode
-        .builderFromEpisode(episode)
-        .characters(characters)
-        .build();
+    EnhancedEpisode enhancedEpisode = EnhancedEpisode.buildFromEpisode(episode);
+    enhancedEpisode.setCharacters(characters);
+
+    return enhancedEpisode;
   }
 
   private EnhancedLocation enhanceLocation(Location location) {
-    List<BasicCharacter> residents = this.characterRepository.getList(location.getResidents())
+    List<EnhancedCharacter> residents = this.characterRepository.getList(location.getResidents())
         .stream()
-        .map(BasicCharacter::buildFromCharacter)
+        .map(EnhancedCharacter::buildFromCharacter)
         .collect(Collectors.toList());
 
-    return EnhancedLocation
-        .builderFromLocation(location)
-        .residents(residents)
-        .build();
+    EnhancedLocation enhancedLocation = EnhancedLocation.buildFromLocation(location);
+    enhancedLocation.setResidents(residents);
+
+    return enhancedLocation;
   }
 }

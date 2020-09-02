@@ -60,17 +60,11 @@ public class Api {
     return restTemplate.exchange(url, HttpMethod.GET, httpEntity, mapperClass);
   }
 
-  public Character getCharacter(Integer id) {
-    String url = getApiUri("/character/{id}")
-        .buildAndExpand(Collections.singletonMap("id", id.toString()))
-        .toUriString();
-
-    ResponseEntity<Character> response = request(url, Character.class);
-
-    return response.getBody();
-  }
-
   public List<Character> getCharacters(List<Integer> ids) {
+    if (ids == null || ids.size() == 0) {
+      return null;
+    }
+
     String url = getApiUri("/character/{ids}")
         .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
@@ -80,7 +74,7 @@ public class Api {
     return Arrays.stream(Objects.requireNonNull(response.getBody())).collect(Collectors.toList());
   }
 
-  public CharactersArchive getAllCharacters(@Nullable Integer page) {
+  public CharactersArchive getCharactersArchive(@Nullable Integer page) {
     String pageNum = Optional.ofNullable(page).orElse(1).toString();
     String url = getApiUri("/character")
         .query("page={page}")
@@ -92,16 +86,11 @@ public class Api {
     return response.getBody();
   }
 
-  public Location getLocation(Integer id) {
-    String url = getApiUri("/location/{id}")
-        .buildAndExpand(Collections.singletonMap("id", id.toString()))
-        .toUriString();
-    ResponseEntity<Location> response = request(url, Location.class);
-
-    return response.getBody();
-  }
-
   public List<Location> getLocations(List<Integer> ids) {
+    if (ids == null || ids.size() == 0) {
+      return null;
+    }
+
     String url = getApiUri("/location/{ids}")
         .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
@@ -111,7 +100,7 @@ public class Api {
     return Arrays.stream(Objects.requireNonNull(response.getBody())).collect(Collectors.toList());
   }
 
-  public LocationsArchive getAllLocations(@Nullable Integer page) {
+  public LocationsArchive getLocationsArchive(@Nullable Integer page) {
     String pageNum = Optional.ofNullable(page).orElse(1).toString();
     String url = getApiUri("/location")
         .query("page={page}")
@@ -123,16 +112,11 @@ public class Api {
     return response.getBody();
   }
 
-  public Episode getEpisode(Integer id) {
-    String url = getApiUri("/episode/{id}")
-        .buildAndExpand(Collections.singletonMap("id", id.toString()))
-        .toUriString();
-    ResponseEntity<Episode> response = request(url, Episode.class);
-
-    return response.getBody();
-  }
-
   public List<Episode> getEpisodes(List<Integer> ids) {
+    if (ids == null || ids.size() == 0) {
+      return null;
+    }
+
     String url = getApiUri("/episode/{ids}")
         .buildAndExpand(Collections.singletonMap("ids", ids))
         .toUriString();
@@ -142,7 +126,7 @@ public class Api {
     return Arrays.stream(Objects.requireNonNull(response.getBody())).collect(Collectors.toList());
   }
 
-  public EpisodesArchive getAllEpisodes(@Nullable Integer page) {
+  public EpisodesArchive getEpisodesArchive(@Nullable Integer page) {
     String pageNum = Optional.ofNullable(page).orElse(1).toString();
     String url = getApiUri("/episode")
         .query("page={page}")
