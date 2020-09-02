@@ -2,6 +2,7 @@ package com.fdograph.demo.api.entities;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +13,7 @@ public class Location extends ApiEntity {
   private String name;
   private String type;
   private String dimension;
-  private List<Integer> residents;
+  private Set<Integer> residents;
   private String url;
   private Timestamp created;
 

@@ -99,47 +99,42 @@ public class DataService {
   }
 
   private EnhancedCharacter enhanceCharacter(Character character) {
-    Integer originId = character.getOrigin().getId();
-    Location originLoc = this.locationRepository.get(originId);
-    EnhancedLocation origin = EnhancedLocation.buildFromLocation(originLoc);
-    Integer locationId = character.getLocation().getId();
-    Location locationLoc = this.locationRepository.get(locationId);
-    EnhancedLocation location = EnhancedLocation.buildFromLocation(locationLoc);
-
     List<EnhancedEpisode> episodes = this.episodeRepository.getList(character.getEpisode())
         .stream()
-        .map(EnhancedEpisode::buildFromEpisode)
+        .map(EnhancedEpisode::fromEpisode)
         .collect(Collectors.toList());
 
-    EnhancedCharacter enhancedCharacter = EnhancedCharacter.buildFromCharacter(character);
-    enhancedCharacter.setEpisodes(episodes);
-    enhancedCharacter.setOrigin(origin);
-    enhancedCharacter.setLocation(location);
-
-    return enhancedCharacter;
+    return EnhancedCharacter
+        .builderFromCharacter(character)
+        .episodes(episodes)
+        .origin(EnhancedLocation
+            .fromLocation(this.locationRepository.get(character.getOrigin().getId())))
+        .location(EnhancedLocation
+            .fromLocation(this.locationRepository.get(character.getLocation().getId())))
+        .build();
   }
 
   private EnhancedEpisode enhanceEpisode(Episode episode) {
     List<EnhancedCharacter> characters = this.characterRepository.getList(episode.getCharacters())
         .stream()
-        .map(EnhancedCharacter::buildFromCharacter)
+        .map(EnhancedCharacter::fromCharacter)
         .collect(Collectors.toList());
 
-    EnhancedEpisode enhancedEpisode = EnhancedEpisode.buildFromEpisode(episode);
-    enhancedEpisode.setCharacters(characters);
-
-    return enhancedEpisode;
+    return EnhancedEpisode
+        .builderFromEpisode(episode)
+        .characters(characters)
+        .build();
   }
 
   private EnhancedLocation enhanceLocation(Location location) {
     List<EnhancedCharacter> residents = this.characterRepository.getList(location.getResidents())
         .stream()
-        .map(EnhancedCharacter::buildFromCharacter)
+        .map(EnhancedCharacter::fromCharacter)
         .collect(Collectors.toList());
 
-    EnhancedLocation enhancedLocation = EnhancedLocation.buildFromLocation(location);
-    enhancedLocation.setResidents(residents);
-
-    return enhancedLocation;
+    return EnhancedLocation
+        .builderFromLocation(location)
+        .residents(residents)
+        .build();
   }
 }

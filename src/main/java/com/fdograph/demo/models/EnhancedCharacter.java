@@ -6,6 +6,7 @@ import com.fdograph.demo.api.entities.CharacterStatus;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.lang.Nullable;
 
 @Data
@@ -28,11 +29,7 @@ public class EnhancedCharacter {
   @Nullable
   private List<EnhancedEpisode> episodes;
 
-  public static EnhancedCharacter buildFromCharacter(@Nullable Character character) {
-    if (character == null) {
-      return null;
-    }
-
+  public static EnhancedCharacterBuilder builderFromCharacter(@NonNull Character character) {
     return EnhancedCharacter.builder()
         .id(character.getId())
         .name(character.getName())
@@ -40,7 +37,10 @@ public class EnhancedCharacter {
         .species(character.getSpecies())
         .type(character.getType())
         .gender(character.getGender())
-        .image(character.getImage())
-        .build();
+        .image(character.getImage());
+  }
+
+  public static EnhancedCharacter fromCharacter(@Nullable Character character) {
+    return character == null ? null : EnhancedCharacter.builderFromCharacter(character).build();
   }
 }

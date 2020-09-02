@@ -2,6 +2,7 @@ package com.fdograph.demo.api.entities;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,7 +19,7 @@ public class Character extends ApiEntity {
   private String image;
   private Relation origin;
   private Relation location;
-  private List<Integer> episode;
+  private Set<Integer> episode;
   private Timestamp created;
 
   Character(Integer id, String name, String status, String species, String type,

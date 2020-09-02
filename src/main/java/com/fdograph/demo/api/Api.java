@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class Api {
     return restTemplate.exchange(url, HttpMethod.GET, httpEntity, mapperClass);
   }
 
-  public List<Character> getCharacters(List<Integer> ids) {
+  public List<Character> getCharacters(Set<Integer> ids) {
     if (ids == null || ids.size() == 0) {
       return null;
     }
@@ -86,7 +87,7 @@ public class Api {
     return response.getBody();
   }
 
-  public List<Location> getLocations(List<Integer> ids) {
+  public List<Location> getLocations(Set<Integer> ids) {
     if (ids == null || ids.size() == 0) {
       return null;
     }
@@ -112,7 +113,7 @@ public class Api {
     return response.getBody();
   }
 
-  public List<Episode> getEpisodes(List<Integer> ids) {
+  public List<Episode> getEpisodes(Set<Integer> ids) {
     if (ids == null || ids.size() == 0) {
       return null;
     }

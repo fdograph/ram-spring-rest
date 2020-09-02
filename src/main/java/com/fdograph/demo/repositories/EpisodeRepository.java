@@ -3,6 +3,7 @@ package com.fdograph.demo.repositories;
 import com.fdograph.demo.api.Api;
 import com.fdograph.demo.api.entities.Episode;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ public class EpisodeRepository extends DataRepository<Episode> {
     super();
   }
 
-  protected List<Episode> fetch(List<Integer> ids) {
+  protected List<Episode> fetch(Set<Integer> ids) {
     return this.api.getEpisodes(ids);
   }
 }

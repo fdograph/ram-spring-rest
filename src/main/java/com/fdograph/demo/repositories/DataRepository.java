@@ -1,7 +1,6 @@
 package com.fdograph.demo.repositories;
 
 import com.fdograph.demo.api.entities.ApiEntity;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,9 +15,9 @@ public abstract class DataRepository<T extends ApiEntity> {
     this.items = new HashMap<>();
   }
 
-  protected abstract List<T> fetch(List<Integer> ids);
+  protected abstract List<T> fetch(Set<Integer> ids);
 
-  private void insert(List<Integer> ids) {
+  private void fetchAndSet(Set<Integer> ids) {
     List<T> fetchedItems = this.fetch(ids);
 
     if (fetchedItems != null) {
@@ -32,18 +31,17 @@ public abstract class DataRepository<T extends ApiEntity> {
       return cached;
     }
 
-    List<Integer> searchIds = List.of(id);
-    this.insert(searchIds);
+    this.fetchAndSet(Set.of(id));
 
     return this.items.get(id);
   }
 
-  public List<T> getList(List<Integer> ids) {
+  public List<T> getList(Set<Integer> ids) {
     Set<Integer> searchIds = new HashSet<>(ids);
     searchIds.removeAll(this.items.keySet());
 
     if (searchIds.size() != 0) {
-      this.insert(new ArrayList<>(searchIds));
+      this.fetchAndSet(searchIds);
     }
 
     return ids.stream().map(this::get).collect(Collectors.toList());

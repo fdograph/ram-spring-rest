@@ -2,6 +2,7 @@ package com.fdograph.demo.api.entities;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -16,8 +17,8 @@ public abstract class ApiEntity {
   @Autowired
   private Logger logger;
 
-  public List<Integer> getIdsFromUriList(List<String> urls) {
-    return urls.stream().map(this::getIdFromUri).collect(Collectors.toList());
+  public Set<Integer> getIdsFromUriList(List<String> urls) {
+    return urls.stream().map(this::getIdFromUri).collect(Collectors.toSet());
   }
 
   public Integer getIdFromUri(@Nullable String uriString) {
