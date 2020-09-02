@@ -15,8 +15,8 @@ public class Episode extends ApiEntity {
   private String url;
   private Timestamp created;
 
-  Episode(Integer id, String name, String airDate, String episode, List<String> characters,
-          String url, Timestamp created) {
+  Episode(Integer id, String name, String episode, List<String> characters, String url,
+          Timestamp created) {
     this.id = id;
     this.name = name;
     this.episode = episode;
