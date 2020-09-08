@@ -17,11 +17,11 @@ public abstract class DataRepository<T extends ApiEntity> {
 
   protected abstract List<T> fetch(Set<Integer> ids);
 
-  private void fetchAndSet(Set<Integer> ids) {
+  private void populate(Set<Integer> ids) {
     List<T> fetchedItems = this.fetch(ids);
 
     if (fetchedItems != null) {
-      fetchedItems.forEach(item -> this.set(item.getId(), item));
+      fetchedItems.forEach(this::set);
     }
   }
 
@@ -31,7 +31,7 @@ public abstract class DataRepository<T extends ApiEntity> {
       return cached;
     }
 
-    this.fetchAndSet(Set.of(id));
+    this.populate(Set.of(id));
 
     return this.items.get(id);
   }
@@ -41,13 +41,13 @@ public abstract class DataRepository<T extends ApiEntity> {
     searchIds.removeAll(this.items.keySet());
 
     if (searchIds.size() != 0) {
-      this.fetchAndSet(searchIds);
+      this.populate(searchIds);
     }
 
     return ids.stream().map(this::get).collect(Collectors.toList());
   }
 
-  public void set(Integer id, T item) {
-    this.items.put(id, item);
+  public void set(T item) {
+    this.items.put(item.getId(), item);
   }
 }

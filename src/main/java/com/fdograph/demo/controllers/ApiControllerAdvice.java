@@ -1,17 +1,17 @@
 package com.fdograph.demo.controllers;
 
-import org.springframework.http.HttpStatus;
+import com.fdograph.demo.api.ApiClientException;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ApiControllerAdvice {
   @ResponseBody
-  @ExceptionHandler(ApiException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  String employeeNotFoundHandler(ApiException ex) {
+  @ExceptionHandler(ApiClientException.class)
+  String employeeNotFoundHandler(HttpServletResponse response, ApiClientException ex) {
+    response.setStatus(ex.getStatusCode().value());
     return ex.getMessage();
   }
 }

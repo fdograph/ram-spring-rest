@@ -44,7 +44,7 @@ public class DataService {
     CharactersArchive archive = this.api.getCharactersArchive(currentPage);
     List<EnhancedCharacter> results = archive.getResults()
         .stream()
-        .peek(item -> this.characterRepository.set(item.getId(), item))
+        .peek(this.characterRepository::set)
         .map(this::enhanceCharacter)
         .collect(Collectors.toList());
 
@@ -65,7 +65,7 @@ public class DataService {
     EpisodesArchive archive = this.api.getEpisodesArchive(currentPage);
     List<EnhancedEpisode> results = archive.getResults()
         .stream()
-        .peek(item -> this.episodeRepository.set(item.getId(), item))
+        .peek(this.episodeRepository::set)
         .map(this::enhanceEpisode)
         .collect(Collectors.toList());
 
@@ -86,7 +86,7 @@ public class DataService {
     LocationsArchive archive = this.api.getLocationsArchive(currentPage);
     List<EnhancedLocation> results = archive.getResults()
         .stream()
-        .peek(item -> this.locationRepository.set(item.getId(), item))
+        .peek(this.locationRepository::set)
         .map(this::enhanceLocation)
         .collect(Collectors.toList());
 
@@ -98,7 +98,11 @@ public class DataService {
     );
   }
 
-  private EnhancedCharacter enhanceCharacter(Character character) {
+  private EnhancedCharacter enhanceCharacter(@Nullable Character character) {
+    if (character == null) {
+      return null;
+    }
+
     List<EnhancedEpisode> episodes = this.episodeRepository.getList(character.getEpisode())
         .stream()
         .map(EnhancedEpisode::fromEpisode)
@@ -107,14 +111,20 @@ public class DataService {
     return EnhancedCharacter
         .builderFromCharacter(character)
         .episodes(episodes)
-        .origin(EnhancedLocation
-            .fromLocation(this.locationRepository.get(character.getOrigin().getId())))
-        .location(EnhancedLocation
-            .fromLocation(this.locationRepository.get(character.getLocation().getId())))
+        .origin(EnhancedLocation.fromLocation(
+            this.locationRepository.get(character.getOrigin().getId())
+        ))
+        .location(EnhancedLocation.fromLocation(
+            this.locationRepository.get(character.getLocation().getId())
+        ))
         .build();
   }
 
-  private EnhancedEpisode enhanceEpisode(Episode episode) {
+  private EnhancedEpisode enhanceEpisode(@Nullable Episode episode) {
+    if (episode == null) {
+      return null;
+    }
+
     List<EnhancedCharacter> characters = this.characterRepository.getList(episode.getCharacters())
         .stream()
         .map(EnhancedCharacter::fromCharacter)
@@ -126,7 +136,11 @@ public class DataService {
         .build();
   }
 
-  private EnhancedLocation enhanceLocation(Location location) {
+  private EnhancedLocation enhanceLocation(@Nullable Location location) {
+    if (location == null) {
+      return null;
+    }
+
     List<EnhancedCharacter> residents = this.characterRepository.getList(location.getResidents())
         .stream()
         .map(EnhancedCharacter::fromCharacter)

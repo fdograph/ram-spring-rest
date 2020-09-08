@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -57,8 +58,16 @@ public class Api {
 
   private <T> ResponseEntity<T> request(String url, Class<T> mapperClass) throws
       RestClientException {
-    logger.info("Requesting! - " + url);
-    return restTemplate.exchange(url, HttpMethod.GET, httpEntity, mapperClass);
+    logger.info("Requesting - " + url);
+
+    ResponseEntity<T> response =
+        restTemplate.exchange(url, HttpMethod.GET, httpEntity, mapperClass);
+
+    if (!response.getStatusCode().equals(HttpStatus.OK)) {
+      throw new RestClientException("Error in API call. Status:" + response.getStatusCode());
+    }
+
+    return response;
   }
 
   public List<Character> getCharacters(Set<Integer> ids) {
