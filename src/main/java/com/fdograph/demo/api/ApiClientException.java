@@ -7,14 +7,10 @@ import org.springframework.web.client.RestClientException;
 
 public class ApiClientException extends RestClientException {
   @Getter
-  private ResponseEntity<?> response;
+  private final ResponseEntity<?> response;
 
   @Getter
-  private HttpStatus statusCode;
-
-  ApiClientException() {
-    super("");
-  }
+  private final HttpStatus statusCode;
 
   ApiClientException(ResponseEntity<?> response) {
     super("Error in API call. Status:" + response.getStatusCode());

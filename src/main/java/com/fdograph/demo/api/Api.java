@@ -56,15 +56,14 @@ public class Api {
         .path(pathTemplate);
   }
 
-  private <T> ResponseEntity<T> request(String url, Class<T> mapperClass) throws
-      RestClientException {
+  private <T> ResponseEntity<T> request(String url, Class<T> mapperClass) {
     logger.info("Requesting - " + url);
 
     ResponseEntity<T> response =
         restTemplate.exchange(url, HttpMethod.GET, httpEntity, mapperClass);
 
     if (!response.getStatusCode().equals(HttpStatus.OK)) {
-      throw new RestClientException("Error in API call. Status:" + response.getStatusCode());
+      throw new ApiClientException(response);
     }
 
     return response;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ApiControllerAdvice {
   @ResponseBody
   @ExceptionHandler(ApiClientException.class)
-  String employeeNotFoundHandler(HttpServletResponse response, ApiClientException ex) {
+  String apiClientExceptionHandler(HttpServletResponse response, ApiClientException ex) {
     response.setStatus(ex.getStatusCode().value());
     return ex.getMessage();
   }
